@@ -1,0 +1,30 @@
+The way to access the api is via this string:
+https://steamcommunity.com/market/priceoverview/?%20country=IT&currency=3&appid=730&market_hash_name={AK-47}%20%7C%20{Redline}%20%28{Field-Tested}%29
+
+
+this time there is no need for furhter credentials
+
+where each parenthesis is:
+    + name
+    + color
+    + exterior (e.g. factory new)
+
+this means that the original table to be queires must have
+- id
+- fullname
+- name
+- color
+- exterior
+- collection (?)
+- price originally paid for it
+- active/inactive (y/n)
+
+
+the results table that is going to be written at every interaction must have
+- progressive
+- timestamp of the query
+- volume of transaction
+- lowest price
+- median price
+
+based on these informations i could write a couple of views that show me relevant information and once the database is big enough i could run some statistics and graphs over it by linking it with python
