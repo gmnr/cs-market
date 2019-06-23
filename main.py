@@ -9,9 +9,13 @@ import requests
 # logging config
 import logging
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)s - %(message)s',
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s - %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S', filename='/home/guido/logs/python/cs-market/cs-market.log')
 log = logging.getLogger(__name__)
+
+# disable logging for requests
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 # define the url to access the steam market api
@@ -45,19 +49,19 @@ for item in records:
         low = result['lowest_price'][:-1].replace(',', '.')   # strip the euro sybmol and convert in the . format
     except:
         low = 0
-        log.debug("Couldn't fetch a value for lowest_price")
+        log.info("Couldn't fetch lowest price for {}-{}, {}".format(name, color, wear))
 
     try:
         med = result['median_price'][:-1].replace(',', '.')   # strip the euro symbol and convert in the . format
     except:
         med = 0
-        log.debug("Couldn't fetch a value for median_price")
+        log.info("Couldn't fetch median price for {}-{}, {}".format(name, color, wear))
 
     try:
         vol = result['volume'].replace(',', '')   # strip . 
     except:
         vol = 0
-        log.debug("Couldn't fetch a value for volumes")
+        log.info("Couldn't fetch volume for {}-{}, {}".format(name, color, wear))
         
     # write into the db
     c.execute("INSERT INTO market(executed_on, item_id, volume, lowest_price, median_price) values('{}', '{}', '{}', '{}', '{}');".format(dt, item_id, vol, low, med))
@@ -71,4 +75,4 @@ if (conn):
     c.close()
     conn.close()
 
-log.debug('Ran without errors')
+log.info('Database update complete.')
