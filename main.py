@@ -1,4 +1,4 @@
-# connects to the loclahost db with the reference index
+# main.py
 
 from config import *   # credentials and table names
 import psycopg2
@@ -43,30 +43,32 @@ for item in records:
     # try to read the values from the API call, if one is missing
     try:
         low = result['lowest_price'][:-1].replace(',', '.')   # strip the euro sybmol and convert in the . format
-    except AttributeError:
+    except (KeyError, NoneType) as e:
         low = 0
+        log.debug("Couldn't fetch a value for lowest_price")
 
     try:
         med = result['median_price'][:-1].replace(',', '.')   # strip the euro symbol and convert in the . format
-    except AttributeError:
+    except (KeyError, NoneType) as e:
         med = 0
+        log.debug("Couldn't fetch a value for median_price")
 
     try:
         vol = result['volume'].replace(',', '')   # strip . 
-    except AttributeError:
+    except (KeyError, NoneType) as e:
         vol = 0
+        log.debug("Couldn't fetch a value for volumes")
         
-
     # write into the db
     c.execute("INSERT INTO market(executed_on, item_id, volume, lowest_price, median_price) values('{}', '{}', '{}', '{}', '{}');".format(dt, item_id, vol, low, med))
-    print('Executed for', name)
 
 # make changes permanent
 conn.commit()
+
 
 # clear the cursor and close the connection
 if (conn):
     c.close()
     conn.close()
 
-log.info('Run without errors')
+log.debug('Ran without errors')
