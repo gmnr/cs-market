@@ -1,9 +1,17 @@
 # connects to the loclahost db with the reference index
+
 from config import *   # credentials and table names
 import psycopg2
 from datetime import datetime
 import requests
-import json
+
+
+# logging config
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(name)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S', filename='/home/guido/logs/python/cs-market/cs-market.log')
+log = logging.getLogger(__name__)
 
 
 # define the url to access the steam market api
@@ -28,10 +36,26 @@ for item in records:
     r = requests.get(url.format(name, color, wear))
     result = r.json()
 
-    low = result['lowest_price'][:-1].replace(',', '.')   # strip the euro sybmol and convert in the . format
-    med = result['median_price'][:-1].replace(',', '.')   # strip the euro symbol and convert in the . format
-    vol = result['volume'].replace(',', '')   # strip . 
+    # get the timestamp at runtime
     dt = datetime.now()
+
+
+    # try to read the values from the API call, if one is missing
+    try:
+        low = result['lowest_price'][:-1].replace(',', '.')   # strip the euro sybmol and convert in the . format
+    except AttributeError:
+        low = 0
+
+    try:
+        med = result['median_price'][:-1].replace(',', '.')   # strip the euro symbol and convert in the . format
+    except AttributeError:
+        med = 0
+
+    try:
+        vol = result['volume'].replace(',', '')   # strip . 
+    except AttributeError:
+        vol = 0
+        
 
     # write into the db
     c.execute("INSERT INTO market(executed_on, item_id, volume, lowest_price, median_price) values('{}', '{}', '{}', '{}', '{}');".format(dt, item_id, vol, low, med))
@@ -44,3 +68,5 @@ conn.commit()
 if (conn):
     c.close()
     conn.close()
+
+log.info('Run without errors')
