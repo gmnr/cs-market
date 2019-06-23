@@ -43,19 +43,19 @@ for item in records:
     # try to read the values from the API call, if one is missing
     try:
         low = result['lowest_price'][:-1].replace(',', '.')   # strip the euro sybmol and convert in the . format
-    except (KeyError, NoneType) as e:
+    except:
         low = 0
         log.debug("Couldn't fetch a value for lowest_price")
 
     try:
         med = result['median_price'][:-1].replace(',', '.')   # strip the euro symbol and convert in the . format
-    except (KeyError, NoneType) as e:
+    except:
         med = 0
         log.debug("Couldn't fetch a value for median_price")
 
     try:
         vol = result['volume'].replace(',', '')   # strip . 
-    except (KeyError, NoneType) as e:
+    except:
         vol = 0
         log.debug("Couldn't fetch a value for volumes")
         
