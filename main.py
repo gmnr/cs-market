@@ -59,13 +59,13 @@ for item in records:
 
     # try to read the values from the API call, if one is missing
     try:
-        low = result['lowest_price'][:-1].replace(',', '.')   # strip the euro sybmol and convert in the . format
+        low = result['lowest_price'][:-1].replace(',', '.').replace('--', '00')   # strip the euro sybmol and convert in the . format
     except:
         low = 0
         log.warning("Couldn't fetch lowest price for {}-{}, {}".format(name, color, wear))
 
     try:
-        med = result['median_price'][:-1].replace(',', '.')   # strip the euro symbol and convert in the . format
+        med = result['median_price'][:-1].replace(',', '.').replace('--', '00')   # strip the euro symbol and convert in the . format
     except:
         med = 0
         log.warning("Couldn't fetch median price for {}-{}, {}".format(name, color, wear))
