@@ -1,9 +1,20 @@
-# main.py
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
-from config import *   # credentials and table names
-import psycopg2
+"""
+Fetch the relevant information (price, volumes) from the Steam Marketplace, based on  \
+        table that serves as an index
+"""
+
+__author__ = 'Guido Minieri'
+__version__ = '1.0.0'
+
+
+# imports
 from datetime import datetime
 import requests
+import psycopg2
+from config import *   # credentials and table names
 
 
 # logging config
@@ -33,16 +44,15 @@ records = c.fetchall()
 
 # loop and write to db
 for item in records:
+    # get the timestamp at runtime
+    dt = datetime.now()
 
     # unpack the 3 variables
     item_id, name, color, wear = item
 
+    # send the request
     r = requests.get(url.format(name, color, wear))
     result = r.json()
-
-    # get the timestamp at runtime
-    dt = datetime.now()
-
 
     # try to read the values from the API call, if one is missing
     try:
@@ -69,10 +79,10 @@ for item in records:
 # make changes permanent
 conn.commit()
 
-
 # clear the cursor and close the connection
 if (conn):
     c.close()
     conn.close()
 
+# final log message
 log.info('Database update complete.')
