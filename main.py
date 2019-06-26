@@ -3,7 +3,7 @@
 
 """
 Fetch the relevant information (price, volumes) from the Steam Marketplace, based on  \
-        table that serves as an index
+        a table that serves as an index
 """
 
 __author__ = 'Guido Minieri'
@@ -22,7 +22,7 @@ from config import *   # credentials and table names
 import logging
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(name)s | %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S', filename='/home/guido/logs/python/cs-market/cs-market.log')
+        datefmt='%Y-%m-%d %H:%M:%S', filename=LOGPATH)
 log = logging.getLogger(__name__)
 
 # disable logging for requests
