@@ -11,6 +11,7 @@ __version__ = '1.0.0'
 
 
 # imports
+import sys
 from datetime import datetime
 import requests
 import psycopg2
@@ -35,12 +36,10 @@ url = 'https://steamcommunity.com/market/priceoverview/?%20country=IT&currency=3
 # connect to the database
 conn = psycopg2.connect(user=USER, dbname=DB)
 
-
 # create the cursor
 c = conn.cursor()
 c.execute("SELECT id, name, color, wear FROM {}".format(ITEM_DB))
 records = c.fetchall()
-
 
 # loop and write to db
 for item in records:
@@ -51,7 +50,11 @@ for item in records:
     item_id, name, color, wear = item
 
     # send the request
-    r = requests.get(url.format(name, color, wear))
+    try:
+        r = requests.get(url.format(name, color, wear))
+    except:
+        log.error('Request failed')
+        sys.exit()
     result = r.json()
 
     # try to read the values from the API call, if one is missing
