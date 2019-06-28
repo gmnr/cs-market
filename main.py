@@ -30,6 +30,15 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
+# function definition
+def parse_response(str):
+    """Clean the response of the api to obtain a single string"""
+    str = str[:-1]
+    str = str..replace(',', '.')
+    str - str.replace('--', '00')
+    return str
+
+
 # define the url to access the steam market api
 url = 'https://steamcommunity.com/market/priceoverview/?%20country=IT&currency=3&appid=730&market_hash_name={}%20%7C%20{}%20%28{}%29'
 
@@ -59,19 +68,19 @@ for item in records:
 
     # try to read the values from the API call, if one is missing
     try:
-        low = result['lowest_price'][:-1].replace(',', '.').replace('--', '00')   # strip the euro sybmol and convert in the . format
+        low = parse_response(low)
     except:
         low = 0
         log.warning("Couldn't fetch lowest price for {}-{}, {}".format(name, color, wear))
 
     try:
-        med = result['median_price'][:-1].replace(',', '.').replace('--', '00')   # strip the euro symbol and convert in the . format
+        med = parse_response(med)
     except:
         med = 0
         log.warning("Couldn't fetch median price for {}-{}, {}".format(name, color, wear))
 
     try:
-        vol = result['volume'].replace(',', '')   # strip . 
+        vol = result['volume'].replace(',', '')   # strip , and replace with comma
     except:
         vol = 0
         log.warning("Couldn't fetch volume for {}-{}, {}".format(name, color, wear))
