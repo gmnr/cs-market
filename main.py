@@ -34,8 +34,8 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 def parse_response(str):
     """Clean the response of the api to obtain a single string"""
     str = str[:-1]
-    str = str..replace(',', '.')
-    str - str.replace('--', '00')
+    str = str.replace(',', '.')
+    str = str.replace('--', '00')
     return str
 
 
@@ -68,13 +68,13 @@ for item in records:
 
     # try to read the values from the API call, if one is missing
     try:
-        low = parse_response(low)
+        low = parse_response(result['lowest_price'])
     except:
         low = 0
         log.warning("Couldn't fetch lowest price for {}-{}, {}".format(name, color, wear))
 
     try:
-        med = parse_response(med)
+        med = parse_response(result['median_price'])
     except:
         med = 0
         log.warning("Couldn't fetch median price for {}-{}, {}".format(name, color, wear))
