@@ -71,19 +71,20 @@ for item in records:
         low = parse_response(result['lowest_price'])
     except:
         low = 0
-        log.warning("Couldn't fetch lowest price for {}-{}, {}".format(name, color, wear))
 
     try:
         med = parse_response(result['median_price'])
     except:
         med = 0
-        log.warning("Couldn't fetch median price for {}-{}, {}".format(name, color, wear))
 
     try:
         vol = result['volume'].replace(',', '')   # strip , and replace with comma
     except:
         vol = 0
-        log.warning("Couldn't fetch volume for {}-{}, {}".format(name, color, wear))
+
+    if (low, med, vol) == (0, 0, 0):
+        log.warning("Couldn't fetch record for {}-{}, {}".format(name, color, wear))
+        continue
         
     # write into the db
     c.execute("INSERT INTO market(executed_on, item_id, volume, lowest_price, median_price) values('{}', '{}', '{}', '{}', '{}');".format(dt, item_id, vol, low, med))
